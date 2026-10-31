@@ -1,0 +1,118 @@
+<title>SGD Converter</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one narrow column, phone-first. Amount, currency chips, big SGD result, editable rates below. */
+:root{
+  --bg:#f2f5f4; --surface:#ffffff; --fg:#14231f; --muted:#5d716b; --line:#d6e0dd;
+  --accent:#0b6b57; --accent-fg:#ffffff; --result-bg:#0b6b57; --result-fg:#ffffff; --result-sub:#bfe3d9;
+  --font-display:'Bricolage Grotesque','Avenir Next',system-ui,sans-serif;
+  --font-body:'DM Sans',system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0e1816; --surface:#16231f; --fg:#e6f0ed; --muted:#8fa69f; --line:#27382f;
+  --accent:#4cc3a4; --accent-fg:#06201a; --result-bg:#16231f; --result-fg:#e6f0ed; --result-sub:#8fa69f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1816; --surface:#16231f; --fg:#e6f0ed; --muted:#8fa69f; --line:#27382f;
+  --accent:#4cc3a4; --accent-fg:#06201a; --result-bg:#16231f; --result-fg:#e6f0ed; --result-sub:#8fa69f; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.4;
+  padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:440px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1{font-family:var(--font-display);font-size:1.5rem;margin:0;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:.875rem;margin:2px 0 0}
+label,.lbl{font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.field{display:flex;flex-direction:column;gap:8px}
+.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.chip{font:inherit;font-weight:600;padding:12px 0;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.chip:focus-visible,input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.amount{display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:6px 16px}
+.amount span{font-weight:600;color:var(--muted)}
+.amount input{flex:1;min-width:0;border:0;background:transparent;color:var(--fg);font-family:var(--font-display);font-weight:700;font-size:2rem;padding:8px 0;outline:none}
+.amount:focus-within{border-color:var(--accent)}
+.result{background:var(--result-bg);color:var(--result-fg);border-radius:14px;padding:20px;border:1.5px solid var(--line);display:flex;flex-direction:column;gap:4px}
+.result .lbl{color:var(--result-sub)}
+.big{font-family:var(--font-display);font-weight:700;font-size:2.6rem;line-height:1.1;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.big small{font-size:1.1rem;font-weight:600;margin-left:6px;color:var(--result-sub)}
+.rate{font-size:.875rem;color:var(--result-sub);font-variant-numeric:tabular-nums}
+details{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:4px 16px}
+summary{cursor:pointer;padding:12px 0;font-weight:600}
+.rates{display:flex;flex-direction:column;gap:10px;padding-bottom:14px}
+.row{display:flex;align-items:center;gap:10px}
+.row b{width:3.2rem}
+.row .eq{color:var(--muted);white-space:nowrap}
+.row input{flex:1;min-width:0;font:inherit;font-variant-numeric:tabular-nums;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg)}
+.note{font-size:.8125rem;color:var(--muted);margin:0 0 6px}
+.reset{font:inherit;font-size:.875rem;background:none;border:0;color:var(--accent);padding:4px 0;cursor:pointer;align-self:flex-start;text-decoration:underline}
+</style>
+
+<main>
+  <header>
+    <h1>SGD Converter</h1>
+    <p class="sub">Ringgit, yen or Taiwan dollars to Singapore dollars</p>
+  </header>
+
+  <div class="field">
+    <span class="lbl" id="from-lbl">Convert from</span>
+    <div class="chips" role="group" aria-labelledby="from-lbl">
+      <button class="chip" data-c="MYR" aria-pressed="true">MYR</button>
+      <button class="chip" data-c="JPY" aria-pressed="false">JPY</button>
+      <button class="chip" data-c="TWD" aria-pressed="false">TWD</button>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="amt">Amount</label>
+    <div class="amount"><span id="sym">RM</span><input id="amt" type="text" inputmode="decimal" value="100" autocomplete="off"></div>
+  </div>
+
+  <section class="result" aria-live="polite">
+    <span class="lbl">You get</span>
+    <div class="big"><span id="out">0.00</span><small>SGD</small></div>
+    <span class="rate" id="rate"></span>
+  </section>
+
+  <details id="rates-box">
+    <summary>Exchange rates</summary>
+    <div class="rates">
+      <p class="note">Rates are saved on this phone. Check a bank or Google for today's rate and type it in. Sample values to start.</p>
+      <div class="row"><b>MYR</b><span class="eq">1 SGD =</span><input id="r-MYR" type="text" inputmode="decimal"></div>
+      <div class="row"><b>JPY</b><span class="eq">1 SGD =</span><input id="r-JPY" type="text" inputmode="decimal"></div>
+      <div class="row"><b>TWD</b><span class="eq">1 SGD =</span><input id="r-TWD" type="text" inputmode="decimal"></div>
+      <button class="reset" id="reset">Reset to sample rates</button>
+    </div>
+  </details>
+</main>
+
+<script>
+(function(){
+  var DEFAULTS={MYR:3.25,JPY:118,TWD:24.5};
+  var SYM={MYR:'RM',JPY:'¥',TWD:'NT$'};
+  var KEY='sgd-converter-v1';
+  var state={cur:'MYR',rates:Object.assign({},DEFAULTS)};
+  try{var s=JSON.parse(localStorage.getItem(KEY)||'null');
+    if(s){if(s.rates)for(var k in DEFAULTS){var v=parseFloat(s.rates[k]);if(v>0)state.rates[k]=v}
+      if(SYM[s.cur])state.cur=s.cur}}catch(e){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+  var $=function(id){return document.getElementById(id)};
+  var amt=$('amt'),out=$('out');
+  function num(t){return parseFloat(String(t).replace(/,/g,''))}
+  function render(){
+    document.querySelectorAll('.chip').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.c===state.cur)});
+    $('sym').textContent=SYM[state.cur];
+    var a=num(amt.value);if(!(a>=0))a=0;
+    var r=state.rates[state.cur];
+    out.textContent=(a/r).toLocaleString('en-SG',{minimumFractionDigits:2,maximumFractionDigits:2});
+    $('rate').textContent='1 '+state.cur+' = '+(1/r).toFixed(r>50?5:4)+' SGD';
+  }
+  document.querySelectorAll('.chip').forEach(function(b){b.addEventListener('click',function(){state.cur=b.dataset.c;save();render()})});
+  amt.addEventListener('input',render);
+  function fillRates(){for(var k in DEFAULTS)$('r-'+k).value=state.rates[k]}
+  Object.keys(DEFAULTS).forEach(function(k){
+    $('r-'+k).addEventListener('input',function(e){var v=num(e.target.value);if(v>0){state.rates[k]=v;save();render()}});
+  });
+  $('reset').addEventListener('click',function(){state.rates=Object.assign({},DEFAULTS);save();fillRates();render()});
+  fillRates();render();
+})();
+</script>

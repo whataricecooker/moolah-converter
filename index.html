@@ -1,5 +1,16 @@
-<title>SGD Converter</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Moolah Converter</title>
+<meta name="theme-color" content="#f06c1c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Moolah">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap">
 <style>
 /* Layout: one narrow column, phone-first. Amount, currency chips, big SGD result, editable rates below. */
@@ -16,6 +27,9 @@
   --bg:#0e1816; --surface:#16231f; --fg:#e6f0ed; --muted:#8fa69f; --line:#27382f;
   --accent:#4cc3a4; --accent-fg:#06201a; --result-bg:#16231f; --result-fg:#e6f0ed; --result-sub:#8fa69f; color-scheme:dark}
 *{box-sizing:border-box}
+html{color-scheme:light dark}
+:root[data-theme="dark"]{color-scheme:dark}
+body{margin:0}
 body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.4;
   padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 main{max-width:440px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
@@ -47,6 +61,8 @@ summary{cursor:pointer;padding:12px 0;font-weight:600}
 .reset{font:inherit;font-size:.875rem;background:none;border:0;color:var(--accent);padding:4px 0;cursor:pointer;align-self:flex-start;text-decoration:underline}
 </style>
 
+</head>
+<body>
 <main>
   <header>
     <h1>SGD Converter</h1>
@@ -116,3 +132,8 @@ summary{cursor:pointer;padding:12px 0;font-weight:600}
   fillRates();render();
 })();
 </script>
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
+</script>
+</body>
+</html>

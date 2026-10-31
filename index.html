@@ -59,6 +59,10 @@ summary{cursor:pointer;padding:12px 0;font-weight:600}
 .row input{flex:1;min-width:0;font:inherit;font-variant-numeric:tabular-nums;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg)}
 .note{font-size:.8125rem;color:var(--muted);margin:0 0 6px}
 .reset{font:inherit;font-size:.875rem;background:none;border:0;color:var(--accent);padding:4px 0;cursor:pointer;align-self:flex-start;text-decoration:underline}
+#installBar{text-align:center;font-size:.875rem}
+#installBar[hidden]{display:none}
+#installBtn{font:inherit;background:none;border:1.5px solid var(--accent);color:var(--accent);border-radius:999px;padding:6px 14px;cursor:pointer}
+#installDismiss{font:inherit;background:none;border:0;color:var(--muted);padding:6px 8px;cursor:pointer}
 </style>
 
 </head>
@@ -99,6 +103,11 @@ summary{cursor:pointer;padding:12px 0;font-weight:600}
       <button class="reset" id="reset">Reset to sample rates</button>
     </div>
   </details>
+
+  <div id="installBar" hidden>
+    <button id="installBtn">Install app</button>
+    <button id="installDismiss" aria-label="Dismiss install button">✕</button>
+  </div>
 </main>
 
 <script>
@@ -134,6 +143,27 @@ summary{cursor:pointer;padding:12px 0;font-weight:600}
 </script>
 <script>
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
+</script>
+<script>
+// Optional install button: Chrome's own prompt is suppressed; button shows only when installable.
+(function(){
+  var bar=document.getElementById('installBar'),deferred=null;
+  function dismissed(){try{return localStorage.getItem('installDismissed')}catch(e){return null}}
+  window.addEventListener('beforeinstallprompt',function(e){
+    e.preventDefault();deferred=e;
+    if(!dismissed())bar.hidden=false;
+  });
+  document.getElementById('installBtn').addEventListener('click',function(){
+    if(!deferred)return;
+    bar.hidden=true;deferred.prompt();
+    deferred.userChoice.then(function(){deferred=null});
+  });
+  document.getElementById('installDismiss').addEventListener('click',function(){
+    bar.hidden=true;
+    try{localStorage.setItem('installDismissed','1')}catch(e){}
+  });
+  window.addEventListener('appinstalled',function(){bar.hidden=true});
+})();
 </script>
 </body>
 </html>

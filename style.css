@@ -1,0 +1,49 @@
+@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/bricolage-grotesque-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/bricolage-grotesque-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/dm-sans-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/dm-sans-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/dm-sans-latin-600-normal.woff2) format('woff2')}
+/* One narrow phone-first column */
+:root{
+  --bg:#f8f4ef; --surface:#ffffff; --fg:#2b1d14; --muted:#6e5a4c; --line:#e4d9cf;
+  --accent:#b94a0a; --accent-fg:#ffffff; --result-bg:#b94a0a; --result-fg:#ffffff; --result-sub:#fff1e4;
+  --font-display:'Bricolage Grotesque','Avenir Next',system-ui,sans-serif;
+  --font-body:'DM Sans',system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#1c1511; --surface:#2a1f19; --fg:#f5ebe3; --muted:#bfa898; --line:#44342a;
+  --accent:#ff9a52; --accent-fg:#2b1204; --result-bg:#2a1f19; --result-fg:#f5ebe3; --result-sub:#bfa898}}
+*{box-sizing:border-box}
+html{color-scheme:light dark}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.4;
+  padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:440px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1{font-family:var(--font-display);font-size:1.5rem;margin:0;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:.875rem;margin:2px 0 0}
+label,.lbl{font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.field{display:flex;flex-direction:column;gap:8px}
+.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.chip{font:inherit;font-weight:600;padding:12px 0;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.chip:focus-visible,input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.amount{display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:6px 16px}
+.amount span{font-weight:600;color:var(--muted)}
+.amount input{flex:1;min-width:0;border:0;background:transparent;color:var(--fg);font-family:var(--font-display);font-weight:700;font-size:2rem;padding:8px 0;outline:none}
+.amount:focus-within{border-color:var(--accent)}
+.result{background:var(--result-bg);color:var(--result-fg);border-radius:14px;padding:20px;border:1.5px solid var(--line);display:flex;flex-direction:column;gap:4px}
+.result .lbl{color:var(--result-sub)}
+.big{font-family:var(--font-display);font-weight:700;font-size:2.6rem;line-height:1.1;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.big small{font-size:1.1rem;font-weight:600;margin-left:6px;color:var(--result-sub)}
+.rate{font-size:.875rem;color:var(--result-sub);font-variant-numeric:tabular-nums}
+details{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:4px 16px}
+summary{cursor:pointer;padding:12px 0;font-weight:600}
+.rates{display:flex;flex-direction:column;gap:10px;padding-bottom:14px}
+.row{display:flex;align-items:center;gap:10px}
+.row b{width:3.2rem}
+.row .eq{color:var(--muted);white-space:nowrap}
+.row input{flex:1;min-width:0;font:inherit;font-variant-numeric:tabular-nums;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg)}
+.note{font-size:.8125rem;color:var(--muted);margin:0 0 6px}
+.reset{font:inherit;font-size:.875rem;background:none;border:0;color:var(--accent);padding:4px 0;cursor:pointer;align-self:flex-start;text-decoration:underline}
+#installBar{text-align:center;font-size:.875rem}
+#installBtn{font:inherit;background:none;border:1.5px solid var(--accent);color:var(--accent);border-radius:999px;padding:6px 14px;cursor:pointer}
+#installDismiss{font:inherit;background:none;border:0;color:var(--muted);padding:6px 8px;cursor:pointer}

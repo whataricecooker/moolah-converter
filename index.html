@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Moolah Converter</title>
 <meta name="theme-color" content="#f06c1c">
@@ -11,60 +12,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap">
-<style>
-/* Layout: one narrow column, phone-first. Amount, currency chips, big SGD result, editable rates below. */
-:root{
-  --bg:#f8f4ef; --surface:#ffffff; --fg:#2b1d14; --muted:#6e5a4c; --line:#e4d9cf;
-  --accent:#b94a0a; --accent-fg:#ffffff; --result-bg:#b94a0a; --result-fg:#ffffff; --result-sub:#fff1e4;
-  --font-display:'Bricolage Grotesque','Avenir Next',system-ui,sans-serif;
-  --font-body:'DM Sans',system-ui,-apple-system,sans-serif;
-}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#1c1511; --surface:#2a1f19; --fg:#f5ebe3; --muted:#bfa898; --line:#44342a;
-  --accent:#ff9a52; --accent-fg:#2b1204; --result-bg:#2a1f19; --result-fg:#f5ebe3; --result-sub:#bfa898; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#1c1511; --surface:#2a1f19; --fg:#f5ebe3; --muted:#bfa898; --line:#44342a;
-  --accent:#ff9a52; --accent-fg:#2b1204; --result-bg:#2a1f19; --result-fg:#f5ebe3; --result-sub:#bfa898; color-scheme:dark}
-*{box-sizing:border-box}
-html{color-scheme:light dark}
-:root[data-theme="dark"]{color-scheme:dark}
-body{margin:0}
-body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.4;
-  padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-main{max-width:440px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
-h1{font-family:var(--font-display);font-size:1.5rem;margin:0;letter-spacing:-.01em}
-.sub{color:var(--muted);font-size:.875rem;margin:2px 0 0}
-label,.lbl{font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.field{display:flex;flex-direction:column;gap:8px}
-.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.chip{font:inherit;font-weight:600;padding:12px 0;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
-.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
-.chip:focus-visible,input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-.amount{display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:6px 16px}
-.amount span{font-weight:600;color:var(--muted)}
-.amount input{flex:1;min-width:0;border:0;background:transparent;color:var(--fg);font-family:var(--font-display);font-weight:700;font-size:2rem;padding:8px 0;outline:none}
-.amount:focus-within{border-color:var(--accent)}
-.result{background:var(--result-bg);color:var(--result-fg);border-radius:14px;padding:20px;border:1.5px solid var(--line);display:flex;flex-direction:column;gap:4px}
-.result .lbl{color:var(--result-sub)}
-.big{font-family:var(--font-display);font-weight:700;font-size:2.6rem;line-height:1.1;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
-.big small{font-size:1.1rem;font-weight:600;margin-left:6px;color:var(--result-sub)}
-.rate{font-size:.875rem;color:var(--result-sub);font-variant-numeric:tabular-nums}
-details{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:4px 16px}
-summary{cursor:pointer;padding:12px 0;font-weight:600}
-.rates{display:flex;flex-direction:column;gap:10px;padding-bottom:14px}
-.row{display:flex;align-items:center;gap:10px}
-.row b{width:3.2rem}
-.row .eq{color:var(--muted);white-space:nowrap}
-.row input{flex:1;min-width:0;font:inherit;font-variant-numeric:tabular-nums;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg)}
-.note{font-size:.8125rem;color:var(--muted);margin:0 0 6px}
-.reset{font:inherit;font-size:.875rem;background:none;border:0;color:var(--accent);padding:4px 0;cursor:pointer;align-self:flex-start;text-decoration:underline}
-#installBar{text-align:center;font-size:.875rem}
-#installBar[hidden]{display:none}
-#installBtn{font:inherit;background:none;border:1.5px solid var(--accent);color:var(--accent);border-radius:999px;padding:6px 14px;cursor:pointer}
-#installDismiss{font:inherit;background:none;border:0;color:var(--muted);padding:6px 8px;cursor:pointer}
-</style>
-
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <main>
@@ -93,7 +41,7 @@ summary{cursor:pointer;padding:12px 0;font-weight:600}
     <span class="rate" id="rate"></span>
   </section>
 
-  <details id="rates-box">
+  <details>
     <summary>Exchange rates</summary>
     <div class="rates">
       <p class="note">Rates are saved on this phone. Check a bank or Google for today's rate and type it in. Sample values to start.</p>
@@ -110,60 +58,6 @@ summary{cursor:pointer;padding:12px 0;font-weight:600}
   </div>
 </main>
 
-<script>
-(function(){
-  var DEFAULTS={MYR:3.175,JPY:123.3,TWD:25.5};
-  var SYM={MYR:'RM',JPY:'¥',TWD:'NT$'};
-  var KEY='sgd-converter-v1';
-  var state={cur:'MYR',rates:Object.assign({},DEFAULTS)};
-  try{var s=JSON.parse(localStorage.getItem(KEY)||'null');
-    if(s){if(s.rates)for(var k in DEFAULTS){var v=parseFloat(s.rates[k]);if(v>0)state.rates[k]=v}
-      if(SYM[s.cur])state.cur=s.cur}}catch(e){}
-  function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
-  var $=function(id){return document.getElementById(id)};
-  var amt=$('amt'),out=$('out');
-  function num(t){return parseFloat(String(t).replace(/,/g,''))}
-  function render(){
-    document.querySelectorAll('.chip').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.c===state.cur)});
-    $('sym').textContent=SYM[state.cur];
-    var a=num(amt.value);if(!(a>=0))a=0;
-    var r=state.rates[state.cur];
-    out.textContent=(a/r).toLocaleString('en-SG',{minimumFractionDigits:2,maximumFractionDigits:2});
-    $('rate').textContent='1 '+state.cur+' = '+(1/r).toFixed(r>50?5:4)+' SGD';
-  }
-  document.querySelectorAll('.chip').forEach(function(b){b.addEventListener('click',function(){state.cur=b.dataset.c;save();render()})});
-  amt.addEventListener('input',render);
-  function fillRates(){for(var k in DEFAULTS)$('r-'+k).value=state.rates[k]}
-  Object.keys(DEFAULTS).forEach(function(k){
-    $('r-'+k).addEventListener('input',function(e){var v=num(e.target.value);if(v>0){state.rates[k]=v;save();render()}});
-  });
-  $('reset').addEventListener('click',function(){state.rates=Object.assign({},DEFAULTS);save();fillRates();render()});
-  fillRates();render();
-})();
-</script>
-<script>
-if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
-</script>
-<script>
-// Optional install button: Chrome's own prompt is suppressed; button shows only when installable.
-(function(){
-  var bar=document.getElementById('installBar'),deferred=null;
-  function dismissed(){try{return localStorage.getItem('installDismissed')}catch(e){return null}}
-  window.addEventListener('beforeinstallprompt',function(e){
-    e.preventDefault();deferred=e;
-    if(!dismissed())bar.hidden=false;
-  });
-  document.getElementById('installBtn').addEventListener('click',function(){
-    if(!deferred)return;
-    bar.hidden=true;deferred.prompt();
-    deferred.userChoice.then(function(){deferred=null});
-  });
-  document.getElementById('installDismiss').addEventListener('click',function(){
-    bar.hidden=true;
-    try{localStorage.setItem('installDismissed','1')}catch(e){}
-  });
-  window.addEventListener('appinstalled',function(){bar.hidden=true});
-})();
-</script>
+<script src="app.js"></script>
 </body>
 </html>
